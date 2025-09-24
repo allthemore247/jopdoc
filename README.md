@@ -1,5 +1,7 @@
-# Joplin Plugin
+# Jopdoc
 
-This is your new Joplin plugin. It is suggested that you use this README file to document your plugin.
+This Joplin plugin allows for exporting notes from Joplin to the DocX format.
 
-For information on how to build or publish the plugin, please see [GENERATOR_DOC.md](./GENERATOR_DOC.md)
+Pandoc is required for this plugin, which can be installed from [here](https://pandoc.org/installing.html). The system path environment variable might also need to be set for Pandoc.
+
+## More formats from Pandoc are planned, eventually. Probably. Hopefully.
