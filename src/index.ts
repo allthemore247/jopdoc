@@ -37,7 +37,14 @@ joplin.plugins.register({
 			},
 
 			onProcessItem: async (context:any, _itemType:number, item:any) => {
-				if (_itemType == 1) { // only get notes
+				console.log(context);
+				console.log(item);
+				console.log("Jopdoc - Item type here is: " + _itemType);
+				
+				if (_itemType == 2) { // notebooks = itemType 2
+					console.log("Jopdoc - I'm a notebook!");
+					// probably gonna implement a folder structure for notebooks later, too lazy rn. It works it works, right?
+				} else if (_itemType == 1) { // individual notes = itemType 1
 					// create the destination directory
 					const title =  item.title.replace(/ /g, "_").replace(/\./g, "");
 					const outFilePath = join(destDir(context), title + '.docx');
