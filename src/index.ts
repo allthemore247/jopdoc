@@ -1,8 +1,7 @@
 import joplin from 'api';
 import { FileSystemItem } from 'api/types';
-import { exec } from 'child_process';
+import { spawn } from 'child_process';
 import { join } from 'path';
-import { promisify } from 'util';
 
 const fs = require("fs-extra");
 const path = require('path');
@@ -60,14 +59,19 @@ joplin.plugins.register({
 					await fs.writeFile(tempInputPath, text);
 					tempFiles.push(tempInputPath); // push to delete later
 
-					// convert to file path
-					const promisedExec = promisify(exec)
-					try {
-						const { stdout, stderr } = await promisedExec(`pandoc -f gfm -t docx -o ${outFilePath} ${tempInputPath}`);
-						console.log(`Jopdoc - ${title} exported!`);
-					} catch (error) {
-						console.error(`Jopdoc - ${error.name}: ${error.message}`);
-					}
+					// convert to docx — use spawn so paths with spaces are passed safely as discrete args
+					await new Promise<void>((resolve, reject) => {
+						const proc = spawn('pandoc', ['-f', 'gfm', '-t', 'docx', '-o', outFilePath, tempInputPath]);
+						proc.on('error', reject);
+						proc.on('close', (code) => {
+							if (code === 0) {
+								console.log(`Jopdoc - ${title} exported!`);
+								resolve();
+							} else {
+								reject(new Error(`pandoc exited with code ${code}`));
+							}
+						});
+					});
 				}
 			},
 
